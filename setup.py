@@ -8,7 +8,7 @@ setup(
   author = 'Adam Mahameed',
   author_email = 'adam.mah315@gmail.com',
   url = 'https://github.com/adam-mah/simple-dyn365',
-  download_url = 'https://github.com/adam-mah/simple-dyn365/archive/refs/tags/1.1.tar.gz',
+  download_url = 'https://github.com/adam-mah/simple-dyn365/archive/refs/tags/1.2.tar.gz',
   keywords = ['simple', 'dyn365', 'dynamics', 'WebAPI'],
   install_requires=['requests'],
   classifiers=[
