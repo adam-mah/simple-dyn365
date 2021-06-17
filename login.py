@@ -1,3 +1,8 @@
+##!/usr/bin/python3
+# -*- coding: utf-8 -*-
+# @Author  : Adam Mahameed
+# @File    : login.py
+
 """Login class and functions for Simple-DYN365
 """
 
@@ -38,7 +43,7 @@ def DynamicsLogin(
 
     elif grant_type == 'password':
         if username is not None and password is not None:
-            pass
+            pass#TODO: Validations and password login
 
     else:
         except_code = 'INVALID AUTH'

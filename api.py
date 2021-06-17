@@ -1,9 +1,14 @@
+##!/usr/bin/python3
+# -*- coding: utf-8 -*-
+# @Author  : Adam Mahameed
+# @File    : api.py
+
 import json
 from collections import OrderedDict
 
 import requests
 
-from login import DynamicsLogin
+from .login import DynamicsLogin
 
 
 class Dynamics:
@@ -195,7 +200,7 @@ class DYNEntity:
         result = self.session.request(method, url, headers=headers, **kwargs)
 
         if result.status_code >= 300:
-            raise Exception('something went wrong')
+            raise Exception('Something went wrong')
 
         return result
 
