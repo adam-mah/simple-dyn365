@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
   name = 'simple-dyn365',
   packages = ['simple_dyn365'],
-  version = '1.1',
+  version = '1.2',
   license='MIT',
   description = 'A simple Dynamics 365 WebAPI implementation',
   author = 'Adam Mahameed',
   author_email = 'adam.mah315@gmail.com',
   url = 'https://github.com/adam-mah/simple-dyn365',
-  download_url = 'https://github.com/adam-mah/simple-dyn365/archive/refs/heads/main.zip',
+  download_url = 'https://github.com/adam-mah/simple-dyn365/archive/refs/tags/1.1.tar.gz',
   keywords = ['simple', 'dyn365', 'dynamics', 'WebAPI'],
   install_requires=['requests'],
   classifiers=[
