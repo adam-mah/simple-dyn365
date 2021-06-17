@@ -1,15 +1,15 @@
 from distutils.core import setup
 setup(
   name = 'simple-dyn365',
-  packages = ['simple-dyn365'],   # Chose the same as "name"
-  version = '1.0',      # Start with a small number and increase it with every change you make
-  license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
-  description = 'A simple Dynamics 365 WebAPI implementation',   # Give a short description about your library
-  author = 'Adam Mahameed',                   # Type in your name
-  author_email = 'adam.mah315@gmail.com',      # Type in your E-Mail
-  url = 'https://github.com/adam-mah',   # Provide either the link to your github or to your website
-  download_url = 'https://github.com/adam-mah/simple-dyn365/archive/refs/heads/main.zip',    # I explain this later on
-  keywords = ['simple', 'dyn365', 'dynamics', 'WebAPI'],   # Keywords that define your package best
+  packages = ['simple_dyn365'],
+  version = '1.1',
+  license='MIT',
+  description = 'A simple Dynamics 365 WebAPI implementation',
+  author = 'Adam Mahameed',
+  author_email = 'adam.mah315@gmail.com',
+  url = 'https://github.com/adam-mah/simple-dyn365',
+  download_url = 'https://github.com/adam-mah/simple-dyn365/archive/refs/heads/main.zip',
+  keywords = ['simple', 'dyn365', 'dynamics', 'WebAPI'],
   install_requires=['requests'],
   classifiers=[
     'Development Status :: 4 - Beta',
