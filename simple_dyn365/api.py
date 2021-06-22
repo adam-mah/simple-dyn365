@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : Adam Mahameed
 # @File    : api.py
-
+import base64
 import json
 from collections import OrderedDict
 
@@ -86,7 +86,7 @@ class Dynamics:
         """
         headers = self.headers.copy()
         additional_headers = kwargs.pop('headers', dict())
-        headers.update(additional_headers)
+        headers.update(additional_headers or dict())
 
         result = self.session.request(
             method, url, headers=headers, **kwargs)
@@ -95,6 +95,13 @@ class Dynamics:
             raise Exception()
 
         return result
+
+    def query(self, query, headers=None):
+        result = self._call_dynamics(
+            method='GET', url=self.base_url+f'{query}',
+            headers=headers
+        )
+        return result.json(object_pairs_hook=OrderedDict)
 
     def __getattr__(self, name):
         """Returns an `DYNEnity` instance for the given Dynamics enity.
@@ -106,43 +113,43 @@ class Dynamics:
             return super().__getattr__(name)
 
         return DYNEntity(
-            object_name=name, session_id=self.session_id, dyn_instance=self.dyn_instance, session=self.session)
+            entity_name=name, session_id=self.session_id, dyn_instance=self.dyn_instance, session=self.session)
 
 
 class DYNEntity:
-    """An interface to a specific type of DYN Object"""
+    """An interface to a specific type of DYN Entity"""
 
     def __init__(
             self,
-            object_name,
+            entity_name,
             session_id,
             dyn_instance,
             session=None,
     ):
         self.session_id = session_id
-        self.name = object_name
+        self.name = entity_name
         self.session = session
         self.dyn_instance = dyn_instance
         self.version = '9.2.21051.00140'
         self.base_url = (
-            '{instance}/api/data/v{version}/{object_name}'.format(instance=dyn_instance,
-                                                                           object_name=object_name,
+            '{instance}/api/data/v{version}/{entity_name}'.format(instance=dyn_instance,
+                                                                           entity_name=entity_name,
                                                                            version=self.version))
 
     def metadata(self, headers=None):
-        """Returns the result of a GET to `.../EntityDefinitions(LogicalName='{object_name}')` as a dict
+        """Returns the result of a GET to `.../EntityDefinitions(LogicalName='{entity_name}')` as a dict
         decoded from the JSON payload returned by Dynamics.
         """
         meta_url = (
-            '{instance}/api/data/v{version}/EntityDefinitions(LogicalName=\'{object_name}\')'.format(instance=self.dyn_instance,
-                                                                  object_name=self.name,
+            '{instance}/api/data/v{version}/EntityDefinitions(LogicalName=\'{entity_name}\')'.format(instance=self.dyn_instance,
+                                                                  entity_name=self.name,
                                                                   version=self.version))
         result = self._call_dynamics('GET', meta_url, headers=headers)
         return result.json(object_pairs_hook=OrderedDict)
 
-    def get(self, record_id, headers=None):
+    def get(self, entity_id, headers=None):
         result = self._call_dynamics(
-            method='GET', url=self.base_url+f'({record_id})',
+            method='GET', url=self.base_url+f'({entity_id})',
             headers=headers
         )
         return result.json(object_pairs_hook=OrderedDict)
@@ -165,23 +172,23 @@ class DYNEntity:
 
         return result.json(object_pairs_hook=OrderedDict)
 
-    def upsert(self, record_id, data, raw_response=False, headers=None):
+    def upsert(self, entity_id, data, raw_response=False, headers=None):
         result = self._call_dynamics(
-            method='PATCH', url=self.base_url+f'({record_id})',
+            method='PATCH', url=self.base_url+f'({entity_id})',
             data=json.dumps(data), headers=headers
         )
         return self._raw_response(result, raw_response)
 
-    def update(self, record_id, data, raw_response=False, headers=None):
+    def update(self, entity_id, data, raw_response=False, headers=None):
         result = self._call_dynamics(
-            method='PATCH', url=self.base_url+f'({record_id})',
+            method='PATCH', url=self.base_url+f'({entity_id})',
             data=json.dumps(data), headers=headers
         )
         return self._raw_response(result, raw_response)
 
-    def delete(self, record_id, raw_response=False, headers=None):
+    def delete(self, entity_id, raw_response=False, headers=None):
         result = self._call_dynamics(
-            method='DELETE', url=self.base_url+f'({record_id})',
+            method='DELETE', url=self.base_url+f'({entity_id})',
             headers=headers
         )
         return self._raw_response(result, raw_response)
@@ -200,7 +207,7 @@ class DYNEntity:
         result = self.session.request(method, url, headers=headers, **kwargs)
 
         if result.status_code >= 300:
-            raise Exception('Something went wrong')
+            raise Exception(result.text)
 
         return result
 
@@ -214,3 +221,30 @@ class DYNEntity:
             return response.status_code
 
         return response
+
+    def upload_base64(self, file_path, base64_field='documentbody', codec='utf-8', data={}, headers=None, **kwargs):
+        with open(file_path, "rb") as f:
+            body = base64.b64encode(f.read()).decode(codec)
+        data[base64_field] = body
+        result = self._call_dynamics(method='POST', url=self.base_url, headers=headers, json=data, **kwargs)
+
+        return result
+
+    def get_base64(self, entity_id, base64_field='documentbody', data=None, headers=None, **kwargs):
+        """Returns binary stream of base64 object at specific path.
+        """
+        result = self._call_dynamics(method='GET', url=self.base_url+f'({entity_id})',
+                                       data=data,
+                                       headers=headers, **kwargs)
+        result = result.json(object_pairs_hook=OrderedDict)
+        return base64.b64decode(result[base64_field])
+
+    def update_base64(self, record_id, file_path, base64_field='documentbody', codec='utf-8', data={}, headers=None, raw_response=False,
+                      **kwargs):
+        with open(file_path, "rb") as f:
+            body = base64.b64encode(f.read()).decode(codec)
+        data[base64_field] = body
+        result = self._call_dynamics(method='PATCH', url=self.base_url+f'({record_id})', json=data,
+                                       headers=headers, **kwargs)
+
+        return self._raw_response(result, raw_response)
