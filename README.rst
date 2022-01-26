@@ -21,7 +21,10 @@ For example:
     from simple_dyn365 import Dynamics
     dyn = Dynamics(client_id='47xxxx37-xxxx-4837-bxx6-5fxxxx2a07e', client_secret='nb4gh5jtbKG.MWASDTU-bLqP~9YCFt-n', tenant_id='cxxxx58c-xxxx-4d8a-ac2e-1a8dxxxxfbb4', crm_org='https://myenvname.crm.dynamics.com')
 
-The second way is using password, but this is still not implemented yet.
+For more information about this method and configuration of API user please refer to:
+`Simple-dyn365 API Configuration`_
+
+The second way is using password, as this feature is still to be implemented.
 
 Record Management
 --------------------------
@@ -120,3 +123,4 @@ This package is released under MIT license. Simple-DYN365 was written by `Adam M
 
 .. _Adam Mahameed: https://github.com/adam-mah
 .. _GitHub: https://github.com/adam-mah/simple-dyn365
+.. _Simple-dyn365 API Configuration: https://github.com/adam-mah/simple-dyn365/blob/main/configuring_dyn365.rst
