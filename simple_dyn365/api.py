@@ -73,13 +73,12 @@ class Dynamics:
         result = self._call_dynamics(method, url, params=params, json=json.dumps(data), **kwargs)
 
         if result.status_code == 204:
-            return result.headers['OData-EntityId']
-
-        json_result = result.json(object_pairs_hook=OrderedDict)
-        if len(json_result) == 0:
-            return None
-
-        return json_result
+            try:
+                retVal = result.headers['OData-EntityId']
+                return retVal
+            except KeyError:
+                return result.status_code
+                # return result.json(object_pairs_hook=OrderedDict)
 
     def _call_dynamics(self, method, url, **kwargs):
         """Utility method for performing HTTP call to Salesforce.
