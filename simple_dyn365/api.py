@@ -53,11 +53,11 @@ class Dynamics:
 
         self.version = '9.2.21051.00140'
         self.base_url = ('{instance}/api/data/v{version}/'
-                         .format(instance=self.dyn_instance,
+                         .format(instance=self.dyn_instance[:-1],
                                  version=self.version))
 
     # Generic Rest Function
-    def restful(self, path, params=None, method='GET', **kwargs):
+    def restful(self, path, data, params=None, method='GET', raw_response=False, **kwargs):
         """Allows you to make a direct REST call if you know the path
 
         Arguments:
@@ -70,8 +70,13 @@ class Dynamics:
         """
 
         url = self.base_url + path
-        result = self._call_dynamics(method, url, name=path, params=params,
-                                     **kwargs)
+        result = self._call_dynamics(method, url, params=params, json=json.dumps(data), **kwargs)
+
+        if result.status_code == 204 and not raw_response:
+            return result.headers['OData-EntityId']
+
+        if raw_response:
+            return result
 
         json_result = result.json(object_pairs_hook=OrderedDict)
         if len(json_result) == 0:
@@ -92,7 +97,7 @@ class Dynamics:
             method, url, headers=headers, **kwargs)
 
         if result.status_code >= 300:
-            raise Exception()
+            raise Exception(result.content)
 
         return result
 
