@@ -75,6 +75,9 @@ class Dynamics:
         if result.status_code == 204 and not raw_response:
             return result.headers['OData-EntityId']
 
+        if raw_response:
+            return result
+
         json_result = result.json(object_pairs_hook=OrderedDict)
         if len(json_result) == 0:
             return None
