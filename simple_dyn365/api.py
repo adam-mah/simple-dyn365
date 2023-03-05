@@ -72,8 +72,10 @@ class Dynamics:
         url = self.base_url + path
         result = self._call_dynamics(method, url, params=params, json=json.dumps(data), **kwargs)
 
-        if result.status_code == 204 and not raw_response:
+        if result.status_code == 204 and 'OData-EntityId' in result.headers and not raw_response:
             return result.headers['OData-EntityId']
+        elif result.status_code == 204 and not raw_response:
+            return result.status_code
 
         if raw_response:
             return result

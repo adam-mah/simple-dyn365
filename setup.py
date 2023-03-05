@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
   name = 'simple-dyn365',
   packages = ['simple_dyn365'],
-  version = '1.5',
+  version = '1.6.1',
   license='MIT',
   description = 'A simple Dynamics 365 Web API implementation',
   author = 'Adam Mahameed',
@@ -12,7 +12,7 @@ setup(
   long_description_content_type='text/x-rst',
   author_email = 'adam.mah315@gmail.com',
   url = 'https://github.com/adam-mah/simple-dyn365',
-  download_url = 'https://github.com/adam-mah/simple-dyn365/archive/refs/tags/1.5.tar.gz',
+  download_url = 'https://github.com/adam-mah/simple-dyn365/archive/refs/tags/1.6.1.tar.gz',
   keywords = ['simple', 'dyn365', 'dynamics', 'WebAPI'],
   install_requires=['requests'],
   classifiers=[
